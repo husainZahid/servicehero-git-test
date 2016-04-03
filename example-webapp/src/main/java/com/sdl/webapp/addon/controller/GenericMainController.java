@@ -772,7 +772,7 @@ public class GenericMainController {
 
 
 	private String dashboardPasswordUpdate(HttpServletRequest request, HttpServletResponse response) {
-		LOG.debug(" dashboardPasswordUpdate entered  ");
+
 		String shStatus = "";
 		int result = 0;
 		String forgotEmail, newPassword, retypePassword, contactId;
