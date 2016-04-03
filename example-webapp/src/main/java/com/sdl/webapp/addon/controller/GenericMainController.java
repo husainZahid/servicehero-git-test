@@ -832,7 +832,7 @@ public class GenericMainController {
 				activateEmail = "None";
 			}
 		}
-		LOG.debug("activateEmail " + activateEmail);
+
 		if (!activateEmail.equals("None")) {
 
 			request.getSession().removeAttribute("activateEMail");
