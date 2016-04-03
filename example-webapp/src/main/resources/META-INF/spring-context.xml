@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--
+        Add Spring beans here that should be registered in the root application context.
+
+        Note: There should be no beans here that are specific to the web application context, such as controllers,
+        view resolvers and other Spring Web MVC beans (those are defined in WEB-INF/dispatcher-servlet.xml).
+    -->
+	<bean id="connectionFactory" class="org.apache.commons.dbcp2.DriverManagerConnectionFactory">
+        <constructor-arg index="0"  value="jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS_LIST =(ADDRESS =(PROTOCOL=TCP)(HOST=10.0.0.42)(PORT=1521)))(CONNECT_DATA=(SID=kcdata)(GLOBAL_NAME=kcdata)(SERVER=SHARED)))" />
+        <constructor-arg index="1"  value="servicehero" />
+        <constructor-arg index="2"  value="serviceherodata" />
+    </bean>
+    <bean id="poolableConnectionFactory" class="org.apache.commons.dbcp2.PoolableConnectionFactory">
+        <constructor-arg index="0" ref="connectionFactory"/>
+        <constructor-arg index="1" >  <null/> </constructor-arg>
+    </bean>
+    <bean id="poolConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig">
+        <property name="maxTotal" value="10"/>
+        <property name="maxIdle" value="5"/>
+        <property name="minIdle" value="3"/>
+        <property name="maxWaitMillis" value="1000"/>
+    </bean>    
+    <bean id="connectionPool" class="org.apache.commons.pool2.impl.GenericObjectPool">
+        <constructor-arg index="0" ref="poolableConnectionFactory"/>
+        <constructor-arg index="1" ref="poolConfig"/>
+    </bean>       
+    <bean id="dataSource" class="org.apache.commons.dbcp2.PoolingDataSource">
+        <constructor-arg ref="connectionPool"/>
+    </bean>
+    <bean id="jdbcTemplateTIR" class="org.springframework.jdbc.core.JdbcTemplate">  
+        <constructor-arg ref="dataSource" />       
+    </bean>
+
+    <!-- telling container to take care of annotations stuff -->
+    <context:annotation-config/>
+    <!-- declaring base package -->
+    <context:component-scan base-package="com.sdl.webapp, com.sdl.dxa, com.khayal.shero"/>
+
+
+    <!-- declare datasource bean -->
+    <bean id="dataSource1"
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+        <property name="url" value="jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS_LIST =(ADDRESS =(PROTOCOL=TCP)(HOST=10.0.0.42)(PORT=1521)))(CONNECT_DATA=(SID=kcdata)(GLOBAL_NAME=kcdata)(SERVER=SHARED)))" />
+        <property name="username" value="servicehero" />
+        <property name="password" value="serviceherodata" />
+    </bean>
+
+
+    <!-- declare beans -->
+    <bean id="blogCommentDAO" class="com.khayal.shero.impl.BlogActionImpl" />
+    <bean id="blogCommentService" class="com.khayal.shero.services.BlogCommentServiceImpl" />
+
+
+    <!-- DD4T Cache Provider -->
+    <bean id="cacheProvider" class="org.dd4t.core.providers.EHCacheProvider">
+        <property name="checkForPreview" value="true"/>
+    </bean>
+
+    <!-- Uncomment this if you want to disable the cache in DD4T -->
+    <!-- bean id="cacheProvider" class="org.dd4t.providers.impl.NoCacheProvider"/ -->
+</beans>
