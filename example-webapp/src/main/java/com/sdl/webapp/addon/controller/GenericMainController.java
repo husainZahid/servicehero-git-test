@@ -788,7 +788,7 @@ public class GenericMainController {
 			retypePassword = "None";
 
 		if (newPassword.equals(retypePassword) && forgotEmail.equals(request.getSession().getAttribute("resetBrandPasswordEMail"))) {
-			LOG.debug(" dashboardPasswordUpdate entered  and all equal ");
+			/*removed debug message here by sree */
 			request.getSession().removeAttribute("resetBrandPasswordEMail");
 			shStatus = SHBrandUser.validateUserForDashboard(request, response, languageName, forgotEmail, newPassword, "resetpass");
 			if (shStatus.equals("user-valid-resetpass-match")) {
