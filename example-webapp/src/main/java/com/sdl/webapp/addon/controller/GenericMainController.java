@@ -1201,7 +1201,7 @@ public class GenericMainController {
 		String blogid = request.getSession().getAttribute("blogEntityId").toString();
 		if (ratingScore == null || ratingScore.length() == 0)
 			ratingScore = "None";
-		if (!ratingScore.equals("None")) {
+		if (!ratingScore.equals("None")) { 
 			try {
 				BlogActionImpl.insertRatingData(request, ratingScore, blogid);
 			} catch (Exception exception) {
